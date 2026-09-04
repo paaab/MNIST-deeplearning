@@ -19,4 +19,19 @@ class SimpleNN(nn.Module):
         #it is quite simple, it just converts negatives values from the outputs and turn them into 0 (ReLU(x) = max(0, x))
         #this ads non-linearity to our model
 
+    def forward(self, x):
+        #This is the "path" that our data is going to follow, x is what we called the images that our model is going to receive
+
+        x = x.view(x.size(0), -1)
+        #we reorganize data, by now we have our batch has [32 (batch size), 1 (channel), 28, 28 (size of the image, 28x28)]
+        #but our first layer needs 784 pixels, so we use view: x.size(0) returns the first value of x (32), and -1 calculates the remaining data (1x28x28)
+        #now we have our data flattened: [32, 784]
+
+        x = self.fc1(x) #data goes through fc1, 784 pixels -> 128 values
+
+        x = self.relu(x) #we apply ReLU, here the shape doesnt change, 128 -> 128, but we "turn off" negative values
+
+        return x #returns final output
+
+
 
