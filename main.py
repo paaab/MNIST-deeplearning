@@ -46,3 +46,4 @@ for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 
 
 
 
+
