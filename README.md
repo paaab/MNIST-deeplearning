@@ -67,3 +67,27 @@ New weight = Old weight - learningRate(0.1 in this case)*Gradient. For our examp
 
 Now, the prediction is 2.2*2 = 4.4, loss = (4.4-4)^2 = 0.16, which is way better, and this is what the model does with every parameter
 
+## BACKPROPAGATION 
+
+Let's take our net as a chain: Image -> fc1 makes calculations -> ReLU modifies some values -> fc2 -> Logits -> Loss 
+
+But PyTorch needs to know, how much each weight has affected the loss. Supposing that our weight changed a bit in fc1,
+that affected ReLU, and then fc2, then logits and finally loss. What we are trying to guess here is how much has changed
+loss respect to each previous value.
+
+Basically what we do here is going backwards in the "chain" and how much does each operation to the loss,
+lets take a simple example where we have Weight, operation A and B and Loss: W -> A -> B -> L
+
+L depends somehow on B, B depends on A, and A depends on W, so we could say L depends on W. Lets calculate with numeric
+examples: A = W × 2, B = A + 3, Loss = B², and, for instance, W = 2. The forward path would be the next one:
+
+W = 2 ---x2---> A = 4 ---+3---> B = 7 ---^2---> L = 49
+
+Now, backwards: How much does L changes with respect to B? dL/dB = 2B = 2x7 = 14, and we keep going backwards:
+dB/dA = 1, dA/dW = 2, and now we apply chain rule: dL/dW = dL/dB x dB/dA x dA/dW = 14 x 1 x 2 = 28. 28 is our
+GRADIENT, as in the previous part, we just need to multiply it by a learning rate and we have our new W.
+
+
+
+
+

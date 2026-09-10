@@ -44,6 +44,9 @@ for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 
     loss = criterion(outputs, labels)
     #we compare the outputs from the model with the labels to know how much the model has failed
 
-
+    loss.backward()
+    # PyTorch calculates how every parameter variates respect to their previous values
+    # basically, it calculates the gradient of every parameter in the model (101,770)
+    # it goes "backwards" because it starts calculating with Loss, and it keeps calculating how that error has affected each previous operation
 
 
