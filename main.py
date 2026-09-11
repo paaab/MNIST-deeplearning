@@ -34,6 +34,13 @@ criterion = nn.CrossEntropyLoss() #LOSS FUNCTION!!!
 #we choose CrossEntropy because we have 10 possible classes, it will evaluate how well our prediction matches the actual label
 #by that, we will receive a value of loss, the lower the loss, the less error our prediction has
 
+optimizer = torch.optim.SGD(model.parameters(), lr= 0.1)
+#torch.optim is the PyTorch module which has optimizers, and we choose SGD, Stochastic Gradient Descent: New Weight = Old Weight - LearningRate x Gradient
+#it will use the gradients calculated by loss.backwards
+#model.parameters tells which parameters the model has to update
+#learning rate is an hyperparameter. it tells how big is the change that the optimizer does
+
+
 for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 labels [0,7,4,8,1 ...]
 
     outputs = model(images)
@@ -45,7 +52,7 @@ for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 
     #we compare the outputs from the model with the labels to know how much the model has failed
 
     loss.backward()
-    # PyTorch calculates how every parameter variates respect to their previous values
+    # PyTorch calculates how the loss changes with respect to every parameter
     # basically, it calculates the gradient of every parameter in the model (101,770)
     # it goes "backwards" because it starts calculating with Loss, and it keeps calculating how that error has affected each previous operation
 
