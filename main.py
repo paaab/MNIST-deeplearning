@@ -43,6 +43,10 @@ optimizer = torch.optim.SGD(model.parameters(), lr= 0.1)
 
 for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 labels [0,7,4,8,1 ...]
 
+    optimizer.zero_grad()
+    #by default, PyTorch calculates every parameter's gradient and saves them, the problem is that it does not replace the values from one batch to another,
+    #it accumulates them. zero_grad puts them to 0 before every iteration.
+
     outputs = model(images)
     #here we call our model, which internally calls the method forward
     #this is the path that it follows:
@@ -55,5 +59,8 @@ for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 
     # PyTorch calculates how the loss changes with respect to every parameter
     # basically, it calculates the gradient of every parameter in the model (101,770)
     # it goes "backwards" because it starts calculating with Loss, and it keeps calculating how that error has affected each previous operation
+
+    optimizer.step()
+    #now that we have the gradients, we apply the changes to the weights
 
 
