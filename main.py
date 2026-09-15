@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader
 import torch
 import torch.nn as nn
 from model import SimpleNN
+import matplotlib.pyplot as plt
+
 
 transform = transforms.ToTensor() #neural networks work with tensors instead of images, transforms images into tensors,
                                   #dividing each pixel by 255 in order to get values between 0.0 and 1.0
@@ -102,6 +104,8 @@ for epoch in range(num_epochs):
     print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}, Accuracy: {accuracy:.2f}%")
 
 
+####EVALUATION
+
 
 model.eval()#some layers act differently while training vs while testing. It's not the case with SimpleNN, but it is a good practice
 
@@ -123,5 +127,17 @@ test_accuracy = correct/total * 100
 print(f"Test Accuracy: {test_accuracy:.2f}%")
 
 
+####IMAGE VISUALIZATION
+
+images, labels = next(iter(test_loader)) #we take a batch from the test
+outputs = model(images)
+predictions = outputs.argmax(dim=1)
+
+plt.imshow(images[0].squeeze(), cmap = "gray")
+#images[0] select the first image of the batch, its shape is [1, 28, 28]. Squeeze removes the 1 channel -> [28,28]
+plt.title(f"Prediction: {predictions[0].item()} | Real: {labels[0].item()}")
+
+plt.axis("off")#removes axis
+plt.show()#shows the image
 
 
