@@ -41,26 +41,38 @@ optimizer = torch.optim.SGD(model.parameters(), lr= 0.1)
 #learning rate is an hyperparameter. it tells how big is the change that the optimizer does
 
 
-for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 labels [0,7,4,8,1 ...]
+num_epochs = 5 #this digit is an hyperparameter, its the number of times we are going to repite a pass through the entire dataset
 
-    optimizer.zero_grad()
-    #by default, PyTorch calculates every parameter's gradient and saves them, the problem is that it does not replace the values from one batch to another,
-    #it accumulates them. zero_grad puts them to 0 before every iteration.
+for epoch in range(num_epochs):
 
-    outputs = model(images)
-    #here we call our model, which internally calls the method forward
-    #this is the path that it follows:
-    #images -> model(images) -> forward(images) -> flatten -> fc1 -> ReLU -> fc2 -> outputs
+    total_loss = 0 #each time we start an epoch, we put total_loss to 0, and we'll add the loss of each batch
 
-    loss = criterion(outputs, labels)
-    #we compare the outputs from the model with the labels to know how much the model has failed
+    for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 labels [0,7,4,8,1 ...]
 
-    loss.backward()
-    # PyTorch calculates how the loss changes with respect to every parameter
-    # basically, it calculates the gradient of every parameter in the model (101,770)
-    # it goes "backwards" because it starts calculating with Loss, and it keeps calculating how that error has affected each previous operation
+        optimizer.zero_grad()
+        #by default, PyTorch calculates every parameter's gradient and saves them, the problem is that it does not replace the values from one batch to another,
+        #it accumulates them. zero_grad puts them to 0 before every iteration.
 
-    optimizer.step()
-    #now that we have the gradients, we apply the changes to the weights
+        outputs = model(images)
+        #here we call our model, which internally calls the method forward
+        #this is the path that it follows:
+        #images -> model(images) -> forward(images) -> flatten -> fc1 -> ReLU -> fc2 -> outputs
+
+        loss = criterion(outputs, labels)
+        #we compare the outputs from the model with the labels to know how much the model has failed
+
+        loss.backward()
+        # PyTorch calculates how the loss changes with respect to every parameter
+        # basically, it calculates the gradient of every parameter in the model (101,770)
+        # it goes "backwards" because it starts calculating with Loss, and it keeps calculating how that error has affected each previous operation
+
+        optimizer.step()
+        #now that we have the gradients, we apply the changes to the weights
+
+        total_loss += loss.item() #loss is a tensor of PyTorch, not a "regular" digit. We can obtain it's value with .item()
+
+    average_loss = total_loss / len(train_loader) #we calculate average loss from each epoch, len(train_loader) is the number of batches
+
+    print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}")
 
 
