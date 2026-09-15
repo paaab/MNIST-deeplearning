@@ -4,7 +4,7 @@ My first deep learning project. It implements a model capable of recognizing han
 ## Features
 - Neural network built with PyTorch
 - Using MNIST dataset
-- 95%+ accuracy
+- 97%+ accuracy
 
 ## Technologies
 - Python
@@ -12,7 +12,7 @@ My first deep learning project. It implements a model capable of recognizing han
 - Matplotlib
 
 ## Results
-Accuracy: 96.2%
+Accuracy: 97.5%
 
 # HOW DOES THE MODEL WORK
 

@@ -27,6 +27,19 @@ train_loader = DataLoader(
     shuffle=True  #in order not to have every similar number in order (00000001111111222222), we shuffle the data
 )
 
+test_dataset = datasets.MNIST(
+    root="data",
+    train=False,             #it is simillar to train_dataset, but with train=False, so we use the 10.000 images test set
+    download=True,
+    transform=transform
+)
+
+test_loader = DataLoader(
+    test_dataset,
+    batch_size= 32,
+    shuffle= False #we don't care now whether the images are shuffled or not
+)
+
 model = SimpleNN() #we create an object from our class SimpleNN
 
 criterion = nn.CrossEntropyLoss() #LOSS FUNCTION!!!
@@ -86,6 +99,29 @@ for epoch in range(num_epochs):
     average_loss = total_loss / len(train_loader) #we calculate average loss from each epoch, len(train_loader) is the number of batches
     accuracy = correct/total * 100
 
-    print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}, Accuracy: {accuracy:.2f}")
+    print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}, Accuracy: {accuracy:.2f}%")
+
+
+
+model.eval()#some layers act differently while training vs while testing. It's not the case with SimpleNN, but it is a good practice
+
+correct = 0
+total = 0
+
+with torch.no_grad(): #tells PyTorch not to calculate or save gradients
+
+    for images, labels in test_loader:
+
+        outputs= model(images) #we replicate what we did, but now with the test set
+
+        predictions = outputs.argmax(dim=1) #predictions is an array with 32 predictions
+
+        correct += (predictions == labels).sum().item() #same idea as before
+        total += labels.size(0)
+
+test_accuracy = correct/total * 100
+print(f"Test Accuracy: {test_accuracy:.2f}%")
+
+
 
 
