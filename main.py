@@ -46,6 +46,8 @@ num_epochs = 5 #this digit is an hyperparameter, its the number of times we are 
 for epoch in range(num_epochs):
 
     total_loss = 0 #each time we start an epoch, we put total_loss to 0, and we'll add the loss of each batch
+    correct = 0
+    total = 0
 
     for images, labels in train_loader: #we obtain 32 images [32, 1, 28, 28] and 32 labels [0,7,4,8,1 ...]
 
@@ -71,8 +73,19 @@ for epoch in range(num_epochs):
 
         total_loss += loss.item() #loss is a tensor of PyTorch, not a "regular" digit. We can obtain it's value with .item()
 
-    average_loss = total_loss / len(train_loader) #we calculate average loss from each epoch, len(train_loader) is the number of batches
+        prediction = outputs.argmax(dim=1)
+        #outputs has a size like this: [32, 10], we want the 10 columns (dim=1), corresponding to the 10 classes, and we want the biggest of them
+        #prediction is an array which contains 32 predictions of our model, we'll then compare them to our labels to count the number of correct predictions
 
-    print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}")
+        correct +=  (prediction==labels).sum().item()
+        #prediction==label creates an array with bools: True = 1, False = 0, so we can use .sum() on it an get the number of corrects
+        #we use .item() to convert a PyTorch tensor into a number
+
+        total += labels.size(0) #usually 32, but in the last batch could be less
+
+    average_loss = total_loss / len(train_loader) #we calculate average loss from each epoch, len(train_loader) is the number of batches
+    accuracy = correct/total * 100
+
+    print(f"Epoch {epoch + 1}/{num_epochs}, Loss = {average_loss:.4f}, Accuracy: {accuracy:.2f}")
 
 
